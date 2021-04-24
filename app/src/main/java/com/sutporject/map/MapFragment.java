@@ -51,18 +51,6 @@ public class MapFragment extends Fragment implements
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this::onMapReady);
-//        mapView.getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-//                MapFragment.this.mapboxMap=mapboxMap;
-//                mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"), new Style.OnStyleLoaded() {
-//                    @Override
-//                    public void onStyleLoaded(@NonNull Style style) {
-//                        //showCurrentLocation(style);
-//                    }
-//                });
-//            }
-//        });
         return root;
     }
 
