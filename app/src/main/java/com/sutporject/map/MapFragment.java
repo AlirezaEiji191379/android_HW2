@@ -1,6 +1,11 @@
 package com.sutporject.map;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,19 +27,35 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.sutporject.map.Controller.ConnectionManager;
 
 import java.util.List;
 
 
-public class MapFragment extends Fragment implements
-        OnMapReadyCallback, PermissionsListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
 
     private MapView mapView;
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
+    private ConnectionManager cm=new ConnectionManager();
+    private BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            LocationManager locationManager=(LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false){
+                Toast.makeText(context,"کاربر گرامی لطفا gps دستگاه خود را روشن نمایید.",Toast.LENGTH_LONG).show();
+            }else{
+                mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        showCurrentLocation(style);
+                    }
+                });
+            }
+        }
+    };
 
     public MapFragment() {
-        // Required empty public constructor
     }
 
 
@@ -54,25 +75,12 @@ public class MapFragment extends Fragment implements
         return root;
     }
 
-    @SuppressLint("MissingPermission")
-    private void showCurrentLocation(Style mapStyle){
-        if (PermissionsManager.areLocationPermissionsGranted(getActivity())) {
-            LocationComponent locationComponent = mapboxMap.getLocationComponent();
-            locationComponent.activateLocationComponent(
-                    LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
-            locationComponent.setLocationComponentEnabled(true);
-            locationComponent.setCameraMode(CameraMode.TRACKING);
-            locationComponent.setRenderMode(RenderMode.COMPASS);
-        } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(getActivity());
-        }
-    }
 
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         MapFragment.this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"),
+        mapboxMap.setStyle(//new Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7")
+                Style.MAPBOX_STREETS,
                 new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
@@ -106,6 +114,21 @@ public class MapFragment extends Fragment implements
         }
     }
 
+    @SuppressLint("MissingPermission")
+    public void showCurrentLocation(Style mapStyle){
+        if (PermissionsManager.areLocationPermissionsGranted(getActivity())) {
+            LocationComponent locationComponent = mapboxMap.getLocationComponent();
+            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
+            locationComponent.setLocationComponentEnabled(true);
+            locationComponent.setCameraMode(CameraMode.TRACKING);
+            locationComponent.setRenderMode(RenderMode.COMPASS);
+        } else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(getActivity());
+        }
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -116,12 +139,18 @@ public class MapFragment extends Fragment implements
     @SuppressWarnings( {"MissingPermission"})
     public void onStart() {
         super.onStart();
+        IntentFilter intentFilter=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        IntentFilter intentFilter1=new IntentFilter("android.location.PROVIDERS_CHANGED");
+        getActivity().registerReceiver(cm,intentFilter);
+        getActivity().registerReceiver(broadcastReceiver,intentFilter1);
         mapView.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        getActivity().unregisterReceiver(cm);
+        getActivity().unregisterReceiver(broadcastReceiver);
         mapView.onStop();
     }
 
@@ -149,7 +178,4 @@ public class MapFragment extends Fragment implements
         super.onDestroyView();
         mapView.onDestroy();
     }
-
-
-
 }
