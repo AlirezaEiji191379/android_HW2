@@ -1,14 +1,12 @@
 package com.sutporject.map;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+import android.Manifest;
 import android.content.IntentFilter;
-import android.location.LocationManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -16,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -28,32 +25,34 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.sutporject.map.Controller.ConnectionManager;
+import com.sutporject.map.Controller.GpsManager;
 
-import java.util.List;
 
-
-public class MapFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
     private MapboxMap mapboxMap;
-    private PermissionsManager permissionsManager;
-    private ConnectionManager cm=new ConnectionManager();
-    private BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            LocationManager locationManager=(LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false){
-                Toast.makeText(context,"کاربر گرامی لطفا gps دستگاه خود را روشن نمایید.",Toast.LENGTH_LONG).show();
-            }else{
-                mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        showCurrentLocation(style);
-                    }
-                });
-            }
-        }
-    };
+    private GpsManager gpsManager;
+    //private ConnectionManager connectionManager;
+    public MapboxMap getMapboxMap() {
+        return mapboxMap;
+    }
+//    private BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            LocationManager locationManager=(LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+//            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false){
+//                Toast.makeText(context,"کاربر گرامی لطفا gps دستگاه خود را روشن نمایید.",Toast.LENGTH_LONG).show();
+//            }else{
+//                mapboxMap.getStyle(new Style.OnStyleLoaded() {
+//                    @Override
+//                    public void onStyleLoaded(@NonNull Style style) {
+//                        showCurrentLocation(style);
+//                    }
+//                });
+//            }
+//        }
+//    };
 
     public MapFragment() {
     }
@@ -63,6 +62,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //connectionManager=new ConnectionManager(this);
+        gpsManager=new GpsManager(this);
     }
 
     @Override
@@ -74,7 +75,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
         mapView.getMapAsync(this::onMapReady);
         return root;
     }
-
 
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
@@ -89,45 +89,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
                 });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void onExplanationNeeded(List<String> permissionsToExplain) {
-        Toast.makeText(getActivity(), R.string.user_location_permission_explanation, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onPermissionResult(boolean granted) {
-        if (granted) {
-            mapboxMap.getStyle(new Style.OnStyleLoaded() {
-                @Override
-                public void onStyleLoaded(@NonNull Style style) {
-                    showCurrentLocation(style);
-                }
-            });
-        } else {
-            Toast.makeText(getActivity(), R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
-            getActivity().finish();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
     public void showCurrentLocation(Style mapStyle){
-        if (PermissionsManager.areLocationPermissionsGranted(getActivity())) {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
             locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
             locationComponent.setLocationComponentEnabled(true);
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
         } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(getActivity());
+            requestPermissions(new String []{Manifest.permission.ACCESS_FINE_LOCATION},100);
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==100 && grantResults.length>0){
+            if(grantResults[0]==0){
+                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        showCurrentLocation(style);
+                    }
+                });
+            }else{
+                Toast.makeText(getActivity(),"برای گرفتن مکان دستگاه نیاز به دسترسی به Location دارد.",Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
 
     @Override
     public void onResume() {
@@ -136,21 +126,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Permiss
     }
 
     @Override
-    @SuppressWarnings( {"MissingPermission"})
     public void onStart() {
         super.onStart();
-        IntentFilter intentFilter=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        //IntentFilter intentFilter=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        //getActivity().registerReceiver(connectionManager,intentFilter);
         IntentFilter intentFilter1=new IntentFilter("android.location.PROVIDERS_CHANGED");
-        getActivity().registerReceiver(cm,intentFilter);
-        getActivity().registerReceiver(broadcastReceiver,intentFilter1);
+        getActivity().registerReceiver(gpsManager,intentFilter1);
         mapView.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(cm);
-        getActivity().unregisterReceiver(broadcastReceiver);
+        //getActivity().unregisterReceiver(connectionManager);
+        getActivity().unregisterReceiver(gpsManager);
         mapView.onStop();
     }
 
