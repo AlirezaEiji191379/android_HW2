@@ -3,36 +3,53 @@ package com.sutporject.map;
 import android.Manifest;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.sutporject.map.Controller.ConnectionManager;
 import com.sutporject.map.Controller.GpsManager;
 
+import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
     private MapboxMap mapboxMap;
     private GpsManager gpsManager;
+    private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
+    private ImageView hoveringMarker;
+    private Layer droppedMarkerLayer;
     //private ConnectionManager connectionManager;
     public MapboxMap getMapboxMap() {
         return mapboxMap;
@@ -56,7 +73,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ViewGroup root=(ViewGroup)inflater.inflate(R.layout.fragment_map, container, false);
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this::onMapReady);
+        mapView.getMapAsync(this);
         return root;
     }
 
@@ -75,11 +92,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void showCurrentLocation(Style mapStyle){
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
+
+            LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(getActivity())
+                    .elevation(5)
+                    .accuracyAlpha(.6f)
+                    .accuracyColor(Color.TRANSPARENT)
+                    .foregroundDrawable(R.drawable.user_location_icon)
+                    .build();
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
-            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
+            LocationComponentActivationOptions locationComponentActivationOptions =
+                    LocationComponentActivationOptions.builder(getActivity(), mapStyle)
+                            .locationComponentOptions(customLocationComponentOptions)
+                            .build();
+            //locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
+            locationComponent.activateLocationComponent(locationComponentActivationOptions);
             locationComponent.setLocationComponentEnabled(true);
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
+
+            getActivity().findViewById(R.id.get_location).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    locationComponent.setCameraMode(CameraMode.TRACKING);
+                    locationComponent.zoomWhileTracking(40f);
+                }
+            });
+
         } else {
             requestPermissions(new String []{Manifest.permission.ACCESS_FINE_LOCATION},100);
         }
@@ -151,4 +189,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroyView();
         mapView.onDestroy();
     }
+
+//    private void initDroppedMarker(@NonNull Style loadedMapStyle) {
+//// Add the marker image to map
+//        loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(
+//                getResources(), R.drawable.mapbox_info_icon_selected));
+//        loadedMapStyle.addSource(new GeoJsonSource("dropped-marker-source-id"));
+//        loadedMapStyle.addLayer(new SymbolLayer(DROPPED_MARKER_LAYER_ID,
+//                "dropped-marker-source-id").withProperties(
+//                iconImage("dropped-icon-image"),
+//                visibility(NONE),
+//                iconAllowOverlap(true),
+//                iconIgnorePlacement(true)
+//        ));
+//    }
+
+
 }
