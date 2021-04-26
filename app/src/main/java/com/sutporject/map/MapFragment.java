@@ -37,22 +37,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public MapboxMap getMapboxMap() {
         return mapboxMap;
     }
-//    private BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            LocationManager locationManager=(LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-//            if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)==false){
-//                Toast.makeText(context,"کاربر گرامی لطفا gps دستگاه خود را روشن نمایید.",Toast.LENGTH_LONG).show();
-//            }else{
-//                mapboxMap.getStyle(new Style.OnStyleLoaded() {
-//                    @Override
-//                    public void onStyleLoaded(@NonNull Style style) {
-//                        showCurrentLocation(style);
-//                    }
-//                });
-//            }
-//        }
-//    };
 
     public MapFragment() {
     }
