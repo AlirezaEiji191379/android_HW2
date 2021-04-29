@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,10 @@ import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.LocationComponentOptions;
@@ -31,6 +36,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.sutporject.map.Controller.ConnectionManager;
@@ -86,6 +92,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         showCurrentLocation(style);
+                        mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                            @Override
+                            public boolean onMapClick(@NonNull LatLng point) {
+                                Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
+                                mapboxMap.clear();
+                                PointF pixel =mapboxMap.getProjection().toScreenLocation(point);
+                                //Toast.makeText(getContext(), String.format("User clicked at: %s", pixel), Toast.LENGTH_LONG).show();
+                                IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                Icon icon = iconFactory.fromResource(R.drawable.choose_location_icon);
+                                mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
+                                return true;
+                            }
+                        });
                     }
                 });
     }
@@ -123,6 +142,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -132,6 +153,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         showCurrentLocation(style);
+                        mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                            @Override
+                            public boolean onMapClick(@NonNull LatLng point) {
+                                Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
+                                mapboxMap.clear();
+                                PointF pixel =mapboxMap.getProjection().toScreenLocation(point);
+                                //Toast.makeText(getContext(), String.format("User clicked at: %s", pixel), Toast.LENGTH_LONG).show();
+                                IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                Icon icon = iconFactory.fromResource(R.drawable.choose_location_icon);
+                                mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
+                                return true;
+                            }
+                        });
                     }
                 });
             }else{
@@ -190,19 +224,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onDestroy();
     }
 
-//    private void initDroppedMarker(@NonNull Style loadedMapStyle) {
-//// Add the marker image to map
-//        loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(
-//                getResources(), R.drawable.mapbox_info_icon_selected));
-//        loadedMapStyle.addSource(new GeoJsonSource("dropped-marker-source-id"));
-//        loadedMapStyle.addLayer(new SymbolLayer(DROPPED_MARKER_LAYER_ID,
-//                "dropped-marker-source-id").withProperties(
-//                iconImage("dropped-icon-image"),
-//                visibility(NONE),
-//                iconAllowOverlap(true),
-//                iconIgnorePlacement(true)
-//        ));
-//    }
+    private void initDroppedMarker(@NonNull Style loadedMapStyle) {
+        // Add the marker image to map
+        loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(
+                getResources(), R.drawable.choose_location_icon));
+        loadedMapStyle.addSource(new GeoJsonSource("dropped-marker-source-id"));
+        loadedMapStyle.addLayer(new SymbolLayer(DROPPED_MARKER_LAYER_ID,
+                "dropped-marker-source-id").withProperties(
+                iconImage("dropped-icon-image"),
+                visibility(NONE),
+                iconAllowOverlap(true),
+                iconIgnorePlacement(true)
+        ));
+    }
 
 
 }
