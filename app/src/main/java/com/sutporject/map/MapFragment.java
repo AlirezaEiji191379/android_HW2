@@ -153,19 +153,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         showCurrentLocation(style);
-                        mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                            @Override
-                            public boolean onMapClick(@NonNull LatLng point) {
-                                Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
-                                mapboxMap.clear();
-                                PointF pixel =mapboxMap.getProjection().toScreenLocation(point);
-                                //Toast.makeText(getContext(), String.format("User clicked at: %s", pixel), Toast.LENGTH_LONG).show();
-                                IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                Icon icon = iconFactory.fromResource(R.drawable.choose_location_icon);
-                                mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
-                                return true;
-                            }
-                        });
                     }
                 });
             }else{

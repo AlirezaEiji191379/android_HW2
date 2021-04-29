@@ -40,19 +40,6 @@ public class GpsManager extends BroadcastReceiver {
                 @Override
                 public void onStyleLoaded(@NonNull Style style) {
                     fragment.showCurrentLocation(style);
-                    fragment.getMapboxMap().addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                        @Override
-                        public boolean onMapClick(@NonNull LatLng point) {
-                            Toast.makeText(context, String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
-                            fragment.getMapboxMap().clear();
-                            PointF pixel =fragment.getMapboxMap().getProjection().toScreenLocation(point);
-                            //Toast.makeText(getContext(), String.format("User clicked at: %s", pixel), Toast.LENGTH_LONG).show();
-                            IconFactory iconFactory = IconFactory.getInstance(context);
-                            Icon icon = iconFactory.fromResource(R.drawable.choose_location_icon);
-                            fragment.getMapboxMap().addMarker(new MarkerOptions().position(point).icon(icon));
-                            return true;
-                        }
-                    });
                 }
             });
         }
