@@ -1,5 +1,6 @@
 package com.sutporject.map;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -7,10 +8,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -25,8 +30,46 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.mapContainer, new MapFragment());
+        MapFragment mapFragment = new MapFragment();
+        BookmarkFragment bookmarkFragment = new BookmarkFragment();
+        fragmentTransaction.add(R.id.mapContainer, mapFragment);
         fragmentTransaction.commit();
+
+        BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigation.setSelectedItemId(R.id.maps_page);
+
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(item.getItemId() == bottomNavigation.getSelectedItemId()){
+                    Log.d("no", "already selected: ");
+                    return false;
+                }
+
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                if(item.getItemId() == R.id.bookmarks_page) {
+                    ft.add(R.id.mapContainer,bookmarkFragment,null);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                    Log.d("yes", bottomNavigation.getSelectedItemId() + " ");
+                    return true;
+                }else if(item.getItemId() == R.id.maps_page){
+                    ft.remove(bookmarkFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+//        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+//            @Override
+//            public void onBackStackChanged() {
+//                bottomNavigation.getMenu().getItem(1).setChecked(true);
+//            }
+//        });
     }
 
     @Override
@@ -45,5 +88,10 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_NETWORK_STATE
         };
             ActivityCompat.requestPermissions(this,allPermissions,100);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
