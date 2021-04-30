@@ -53,9 +53,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private MapboxMap mapboxMap;
     private GpsManager gpsManager;
-    private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
-    private ImageView hoveringMarker;
-    private Layer droppedMarkerLayer;
     //private ConnectionManager connectionManager;
     public MapboxMap getMapboxMap() {
         return mapboxMap;
@@ -92,19 +89,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         showCurrentLocation(style);
-                        mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                            @Override
-                            public boolean onMapClick(@NonNull LatLng point) {
-                                Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
-                                mapboxMap.clear();
-                                PointF pixel =mapboxMap.getProjection().toScreenLocation(point);
-                                //Toast.makeText(getContext(), String.format("User clicked at: %s", pixel), Toast.LENGTH_LONG).show();
-                                IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
-                                mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
-                                return true;
-                            }
-                        });
+                            mapboxMap.addOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
+                                @Override
+                                public boolean onMapLongClick(@NonNull LatLng point) {
+                                    Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
+                                    mapboxMap.clear();
+                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                    Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
+                                    mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
+                                    return false;
+                                }
+                            });
                     }
                 });
     }
