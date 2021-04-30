@@ -14,12 +14,19 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,6 +51,10 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.sutporject.map.Controller.ConnectionManager;
 import com.sutporject.map.Controller.GpsManager;
+import com.sutporject.map.Controller.SearchController;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
@@ -56,7 +67,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private MapboxMap mapboxMap;
     private GpsManager gpsManager;
-    //private ConnectionManager connectionManager;
+    private SearchController searchController;
+    private ExecutorService executorService;
+    private Handler handler=new Handler(Looper.getMainLooper()){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+
+        }
+    };
+
     public MapboxMap getMapboxMap() {
         return mapboxMap;
     }
@@ -69,6 +89,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.executorService= Executors.newCachedThreadPool();
         //connectionManager=new ConnectionManager(this);
         gpsManager=new GpsManager(this);
     }
@@ -77,6 +98,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getActivity(), getString(R.string.mapbox_access_token));
         ViewGroup root=(ViewGroup)inflater.inflate(R.layout.fragment_map, container, false);
+        AutoCompleteTextView search_location=root.findViewById(R.id.search_location);
+        search_location.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                boolean handled=false;
+                if(i== EditorInfo.IME_ACTION_SEARCH){
+                    handled=true;
+                    searchController=new SearchController(handler,textView.getText().toString());
+                    executorService.execute(searchController);
+                }
+                return handled;
+            }
+        });
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
