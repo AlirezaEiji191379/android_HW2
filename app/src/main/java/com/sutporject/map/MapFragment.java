@@ -100,7 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 PointF pixel =mapboxMap.getProjection().toScreenLocation(point);
                                 //Toast.makeText(getContext(), String.format("User clicked at: %s", pixel), Toast.LENGTH_LONG).show();
                                 IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                Icon icon = iconFactory.fromResource(R.drawable.choose_location_icon);
+                                Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
                                 mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
                                 return true;
                             }
@@ -112,19 +112,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void showCurrentLocation(Style mapStyle){
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
 
-            LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(getActivity())
-                    .elevation(5)
-                    .accuracyAlpha(.6f)
-                    .accuracyColor(Color.TRANSPARENT)
-                    .foregroundDrawable(R.drawable.user_location_icon)
-                    .build();
+//            LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(getActivity())
+//                    .elevation(5)
+//                    .accuracyAlpha(.6f)
+//                    .accuracyColor(Color.TRANSPARENT)
+//                    .foregroundDrawable(R.drawable.user_location_icon)
+//                    .build();
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
-            LocationComponentActivationOptions locationComponentActivationOptions =
-                    LocationComponentActivationOptions.builder(getActivity(), mapStyle)
-                            .locationComponentOptions(customLocationComponentOptions)
-                            .build();
-            //locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
-            locationComponent.activateLocationComponent(locationComponentActivationOptions);
+//            LocationComponentActivationOptions locationComponentActivationOptions =
+//                    LocationComponentActivationOptions.builder(getActivity(), mapStyle)
+//                            .locationComponentOptions(customLocationComponentOptions)
+//                            .build();
+            locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
+            //locationComponent.activateLocationComponent(locationComponentActivationOptions);
             locationComponent.setLocationComponentEnabled(true);
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
@@ -211,19 +211,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView.onDestroy();
     }
 
-    private void initDroppedMarker(@NonNull Style loadedMapStyle) {
-        // Add the marker image to map
-        loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(
-                getResources(), R.drawable.choose_location_icon));
-        loadedMapStyle.addSource(new GeoJsonSource("dropped-marker-source-id"));
-        loadedMapStyle.addLayer(new SymbolLayer(DROPPED_MARKER_LAYER_ID,
-                "dropped-marker-source-id").withProperties(
-                iconImage("dropped-icon-image"),
-                visibility(NONE),
-                iconAllowOverlap(true),
-                iconIgnorePlacement(true)
-        ));
-    }
+
 
 
 }
