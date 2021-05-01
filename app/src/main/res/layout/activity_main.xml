@@ -23,7 +23,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mapContainer"
         app:menu="@menu/bottom_navigation_menu"
-        android:background="@color/backgroundColor"/>
+        android:background="@color/backgroundColor"
+        app:itemRippleColor="@color/secondaryLightColor"
+        app:itemTextColor="@color/bottomnav_selector_color"
+        app:itemIconTint="@color/bottomnav_selector_color"/>
 
 <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
 <!--        android:id="@+id/get_location"-->
