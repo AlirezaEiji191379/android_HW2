@@ -25,7 +25,6 @@
         android:background="@android:color/background_light"
         android:hint="@string/search_hint"
         android:padding="5dp"
-        android:completionThreshold="3"
         android:inputType="text"
         android:imeOptions="actionSearch"/>
 
