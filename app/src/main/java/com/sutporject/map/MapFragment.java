@@ -96,7 +96,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public MapFragment() {
     }
 
-
+    private MapFragment getMapFragment(){return this;}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +171,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     return true;
                                 }
                             }
-
                         }
                     }
                 }
@@ -202,6 +201,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     IconFactory iconFactory = IconFactory.getInstance(getActivity());
                                     Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
                                     mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
+                                    SaveDialog saveDialog=new SaveDialog(point,getMapFragment());
+                                    saveDialog.show(getActivity().getSupportFragmentManager(),"save dialog");
                                     return false;
                                 }
                             });
@@ -211,20 +212,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void showCurrentLocation(Style mapStyle){
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-
-//            LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(getActivity())
-//                    .elevation(5)
-//                    .accuracyAlpha(.6f)
-//                    .accuracyColor(Color.TRANSPARENT)
-//                    .foregroundDrawable(R.drawable.user_location_icon)
-//                    .build();
             LocationComponent locationComponent = mapboxMap.getLocationComponent();
-//            LocationComponentActivationOptions locationComponentActivationOptions =
-//                    LocationComponentActivationOptions.builder(getActivity(), mapStyle)
-//                            .locationComponentOptions(customLocationComponentOptions)
-//                            .build();
             locationComponent.activateLocationComponent(LocationComponentActivationOptions.builder(getActivity(), mapStyle).build());
-            //locationComponent.activateLocationComponent(locationComponentActivationOptions);
             locationComponent.setLocationComponentEnabled(true);
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
@@ -233,7 +222,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onClick(View view) {
                     locationComponent.setCameraMode(CameraMode.TRACKING);
-                    locationComponent.zoomWhileTracking(40f);
+                    //locationComponent.zoomWhileTracking(40f);
                 }
             });
 
@@ -259,7 +248,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getActivity(),"برای گرفتن مکان دستگاه نیاز به دسترسی به Location دارد.",Toast.LENGTH_LONG).show();
             }
         }
-
     }
 
     @Override
@@ -324,8 +312,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         return s.toString().trim();
     }
-
-
-
-
 }
