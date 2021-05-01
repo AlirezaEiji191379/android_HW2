@@ -22,6 +22,8 @@
         android:layout_height="46dp"
         android:layout_gravity="top|center"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         android:background="@drawable/searchbox_style"
         android:hint="@string/search_hint"
         android:textColorHint="@color/primaryTextColor"

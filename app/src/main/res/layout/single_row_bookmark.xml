@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:focusable="true"
+    android:clickable="true"
+    android:layout_margin="8dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:elevation="5dp"
+    app:cardCornerRadius="5dp"
+    app:cardBackgroundColor="@color/primaryDarkColor">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/bookmark_name"
+            android:textColor="@color/secondaryTextColor"
+            android:text="namexmp"
+            android:textSize="25dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="bottom"
+            android:text="Lat:"
+            android:textColor="@color/secondaryTextColor"
+            android:id="@+id/lat_label"
+            android:layout_below="@id/bookmark_name"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@id/lat_label"
+            android:id="@+id/bookmark_lat"
+            android:text="latexp"
+            android:layout_marginStart="20dp"
+            android:layout_below="@id/bookmark_name"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_toLeftOf="@id/bookmark_long"
+            android:text="Long:"
+            android:textColor="@color/secondaryTextColor"
+            android:id="@+id/long_label"
+            android:layout_below="@id/bookmark_name"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/bookmark_long"
+            android:text="longexm"
+            android:layout_marginStart="20dp"
+            android:layout_below="@id/bookmark_name"
+            />
+
+    </RelativeLayout>
+
+
+
+</com.google.android.material.card.MaterialCardView>

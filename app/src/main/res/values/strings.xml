@@ -10,9 +10,9 @@
     <string name="settings_tab">Settings</string>
     <string name="app_label">map</string>
     <string name="search_hint">search...</string>
-    <string name="internet_connection">لطفا به اینترنت وصل شوید!</string>
-    <string name="not_Found">مکان مورد نظر یافت نشد</string>
-    <string name="save_dialog">آیا مایل به ذخیره این مکان هستید؟</string>
-    <string name="save_hint">نام مکان</string>
+    <string name="internet_connection">Please connect to the internet</string>
+    <string name="not_Found">Your selected location wasn\'t found</string>
+    <string name="save_dialog">Do you want to save this location?</string>
+    <string name="save_hint">Location name</string>
 
 </resources>
