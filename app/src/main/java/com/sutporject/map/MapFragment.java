@@ -46,6 +46,7 @@ import com.sutporject.map.Controller.SearchController;
 import com.sutporject.map.Model.SearchedPoint;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -73,8 +74,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             else{
                 allApiReturned= (ArrayList<SearchedPoint>) msg.obj;
                 if(allApiReturned.size()==0){
-                    ArrayAdapter<String> adapter=new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1,new String[]{"not found!"});
-                    search_location.setAdapter(adapter);
+                    return;
                 }
                 else{
                     for(SearchedPoint searchedPoint:allApiReturned){
@@ -153,8 +153,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 boolean handled=false;
                 if(i== EditorInfo.IME_ACTION_SEARCH){
                     handled=true;
-//                    searchController=new SearchController(handler,textView.getText().toString());
-//                    executorService.execute(searchController);
+                    if(allApiReturned.size()==0){
+                        Toast.makeText(getActivity(),R.string.not_Found,Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        String text=capitailizeWord(textView.getText().toString());
+                        String [] tokens=text.split(" ");
+                        for(SearchedPoint searchedPoint:allApiReturned){
+                            for(String string:tokens){
+                                if(searchedPoint.getPlace_name().contains(string)){
+                                    mapboxMap.clear();
+                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                    Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
+                                    mapboxMap.addMarker(new MarkerOptions().position(searchedPoint.getCoordinates()).icon(icon));
+                                    CameraPosition cameraPosition=new CameraPosition.Builder().target(searchedPoint.getCoordinates()).zoom(10).build();
+                                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
+                                    return true;
+                                }
+                            }
+
+                        }
+                    }
                 }
                 return handled;
             }
@@ -290,6 +309,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onDestroyView() {
         super.onDestroyView();
         mapView.onDestroy();
+    }
+
+    // Method to convert the string
+    private static String capitailizeWord(String str) {
+        StringBuffer s = new StringBuffer();
+
+        // Declare a character of space
+        // To identify that the next character is the starting
+        // of a new word
+        char ch = ' ';
+        for (int i = 0; i < str.length(); i++) {
+
+            // If previous character is space and current
+            // character is not space then it shows that
+            // current letter is the starting of the word
+            if (ch == ' ' && str.charAt(i) != ' ')
+                s.append(Character.toUpperCase(str.charAt(i)));
+            else
+                s.append(str.charAt(i));
+            ch = str.charAt(i);
+        }
+
+        // Return the string with trimming
+        return s.toString().trim();
     }
 
 

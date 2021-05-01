@@ -11,5 +11,6 @@
     <string name="app_label">map</string>
     <string name="search_hint">search...</string>
     <string name="internet_connection">لطفا به اینترنت وصل شوید!</string>
+    <string name="not_Found">مکان مورد نظر یافت نشد</string>
 
 </resources>
