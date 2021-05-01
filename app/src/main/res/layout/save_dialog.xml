@@ -29,7 +29,6 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:padding="10dp"
-            android:gravity="right"
             android:hint="@string/save_hint" />
     </LinearLayout>
 
