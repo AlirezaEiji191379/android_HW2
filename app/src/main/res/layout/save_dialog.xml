@@ -6,30 +6,88 @@
     android:layout_height="match_parent">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        tools:layout_editor_absoluteX="180dp"
-        tools:layout_editor_absoluteY="123dp">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical"-->
+<!--        android:gravity="center"-->
+<!--        tools:layout_editor_absoluteX="180dp"-->
+<!--        tools:layout_editor_absoluteY="123dp">-->
+<!--        -->
+<!--    </LinearLayout>-->
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/location_long_layout"
+            android:layout_centerHorizontal="true"
+            android:padding="20dp"
+            >
+
+            <TextView
+                android:id="@+id/location_long_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Long:"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/location_long"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_centerHorizontal="true"
+                android:text="exp"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_lat_layout"
+        android:layout_below="@id/location_long_layout"
+        android:layout_centerHorizontal="true"
+        android:padding="20dp"
+        >
         <TextView
-            android:id="@+id/location_textView"
-            android:layout_width="232dp"
+            android:id="@+id/location_lat_label"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:gravity="right"
+            android:textStyle="bold"
+            android:text="Lat:"
             />
+        <TextView
+            android:id="@+id/location_lat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="exp"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
+
 
         <EditText
             android:id="@+id/location_name"
-            android:layout_width="233dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
             android:padding="10dp"
-            android:hint="@string/save_hint" />
-    </LinearLayout>
+            android:hint="@string/save_hint"
+            android:layout_below="@id/location_lat_layout"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
