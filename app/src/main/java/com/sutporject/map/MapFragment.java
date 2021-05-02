@@ -1,6 +1,7 @@
 package com.sutporject.map;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -12,20 +13,26 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -57,6 +64,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
+    private SpeechRecognizer speechRecognizer;
     private MapboxMap mapboxMap;
     private GpsManager gpsManager;
     private SearchController searchController;
@@ -64,6 +72,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     ArrayList<SearchedPoint> allApiReturned=new ArrayList<>();
     ArrayAdapter<SearchedPoint> adapter;
     AutoCompleteTextView search_location;
+    private  Intent speechIntent;
     private Handler handler=new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -104,12 +113,64 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.executorService= Executors.newCachedThreadPool();
         //connectionManager=new ConnectionManager(this);
         gpsManager=new GpsManager(this);
+        speechRecognizer=SpeechRecognizer.createSpeechRecognizer(getActivity());
+        speechIntent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getActivity(), getString(R.string.mapbox_access_token));
         ViewGroup root=(ViewGroup)inflater.inflate(R.layout.fragment_map, container, false);
+
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+
+            }
+
+            @Override
+            public void onRmsChanged(float v) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] bytes) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onResults(Bundle bundle) {
+                ArrayList<String> strings=bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                ((AutoCompleteTextView)root.findViewById(R.id.search_location)).setText(strings.get(0));
+            }
+
+            @Override
+            public void onPartialResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onEvent(int i, Bundle bundle) {
+
+            }
+        });
         search_location=(AutoCompleteTextView) root.findViewById(R.id.search_location);
         search_location.setThreshold(1);
         adapter=new ArrayAdapter<SearchedPoint>(getActivity(), android.R.layout.simple_list_item_2,allApiReturned);
@@ -178,6 +239,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        ((FloatingActionButton)root.findViewById(R.id.get_voice)).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    speechRecognizer.stopListening();
+                }
+
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    speechRecognizer.startListening(speechIntent);
+                }
+                return false;
+            }
+        });
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
