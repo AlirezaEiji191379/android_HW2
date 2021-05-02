@@ -14,5 +14,7 @@
     <string name="not_Found">Your selected location wasn\'t found</string>
     <string name="save_dialog">Do you want to save this location?</string>
     <string name="save_hint">Location name</string>
+    <string name="dark_mode_label">Dark Mode</string>
+    <string name="delete_all_bookmarks_label">Delete All Bookmarks</string>
 
 </resources>

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.sutporject.map.Model.Bookmark;
 
 public class SaveDialog  extends AppCompatDialogFragment {
     private LatLng latLng;
@@ -35,11 +36,11 @@ public class SaveDialog  extends AppCompatDialogFragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 fragment.getMapboxMap().clear();
             }
-        }).setPositiveButton("save", new DialogInterface.OnClickListener() {
+        }).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String location_name=((EditText)view.findViewById(R.id.location_name)).getText().toString();
-                Toast.makeText(getActivity(),location_name+" saved!", Toast.LENGTH_LONG).show();
+                String locationName=((EditText)view.findViewById(R.id.location_name)).getText().toString();
+                Bookmark.addBookmark(new Bookmark(locationName,latLng));
             }
         });
         return builder.create();
