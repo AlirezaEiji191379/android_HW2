@@ -2,7 +2,10 @@ package com.sutporject.map.Model;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import java.util.ArrayList;
+
 public class Bookmark {
+    private static ArrayList<Bookmark> bookmarks = new ArrayList<>();
     private String name;
     private LatLng latLng;
 
@@ -18,4 +21,13 @@ public class Bookmark {
     public LatLng getLatLng() {
         return latLng;
     }
+
+    public static void addBookmark(Bookmark bookmark){
+        bookmarks.add(bookmark);
+    }
+
+    public static ArrayList<Bookmark> getBookmarks() {
+        return bookmarks;
+    }
+
 }

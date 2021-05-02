@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.sutporject.map.Model.Bookmark;
 
 public class SaveDialog  extends AppCompatDialogFragment {
     private LatLng latLng;
@@ -29,17 +30,19 @@ public class SaveDialog  extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater=getActivity().getLayoutInflater();
         View view=inflater.inflate(R.layout.save_dialog,null);
-        ((TextView)view.findViewById(R.id.location_textView)).setText(latLng.toString());
+        ((TextView)view.findViewById(R.id.location_lat)).setText(String.format("%.3f",latLng.getLatitude()));
+        ((TextView)view.findViewById(R.id.location_long)).setText(String.format("%.3f",latLng.getLongitude()));
         builder.setView(view).setTitle(R.string.save_dialog).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 fragment.getMapboxMap().clear();
             }
-        }).setPositiveButton("save", new DialogInterface.OnClickListener() {
+        }).setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String location_name=((EditText)view.findViewById(R.id.location_name)).getText().toString();
-                Toast.makeText(getActivity(),location_name+" saved!", Toast.LENGTH_LONG).show();
+                String locationName=((EditText)view.findViewById(R.id.location_name)).getText().toString();
+                Bookmark.addBookmark(new Bookmark(locationName,latLng));
+                Toast.makeText(getContext(),"Location " + locationName + " has been added successfully.",Toast.LENGTH_SHORT).show();
             }
         });
         return builder.create();
