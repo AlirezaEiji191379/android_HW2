@@ -16,5 +16,6 @@
     <string name="save_hint">Location name</string>
     <string name="dark_mode_label">Dark Mode</string>
     <string name="delete_all_bookmarks_label">Delete All Bookmarks</string>
+    <string name="no_bookmarks">No bookmarks here :(</string>
 
 </resources>

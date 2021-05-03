@@ -3,20 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".BookmarkFragment"
     android:background="@color/backgroundColor"
     android:alpha="0.9">
+
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/search_bar_bookmarks"
+        app:floatingSearch_dimBackground="false"
+        app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_hintTextColor="@color/primaryTextColor"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_backgroundColor="@color/primaryDarkColor" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bookmarks_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:overScrollMode="ifContentScrolls"/>
+        android:overScrollMode="ifContentScrolls"
+        android:layout_below="@id/search_bar_bookmarks"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No bookmarks here :("
+        android:text="@string/no_bookmarks"
         android:textColor="@color/primaryTextColor"
         android:textStyle="bold"
         android:textSize="30sp"
@@ -24,5 +39,6 @@
         android:id="@+id/no_bookmark_label"
         android:layout_centerInParent="true"
         />
+
 
 </RelativeLayout>
