@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkPermission(){
         String [] allPermissions=new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.RECORD_AUDIO
         };
