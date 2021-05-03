@@ -39,8 +39,8 @@ public class BookmarkCardsAdapter extends RecyclerView.Adapter<BookmarkCardsAdap
     public void onBindViewHolder(@NonNull BookmarkViewHolder holder, int position) {
         Bookmark bookmark = bookmarks.get(position);
         holder.locationName.setText(bookmark.getName());
-        holder.locationLong.setText(String.format("%.3f",bookmark.getLatLng().getLongitude()));
-        holder.locationLat.setText(String.format("%.3f",bookmark.getLatLng().getLatitude()));
+        holder.locationLong.setText(String.format("%.3f",bookmark.getLatLong()));
+        holder.locationLat.setText(String.format("%.3f",bookmark.getLatLat()));
     }
 
     @Override
@@ -68,9 +68,6 @@ public class BookmarkCardsAdapter extends RecyclerView.Adapter<BookmarkCardsAdap
             }
             FilterResults filterResults = new FilterResults();
             filterResults.values = filteredList;
-
-            Log.i(TAG, "perform: \n" + filteredList.toString());
-
             return filterResults;
         }
 
@@ -78,9 +75,6 @@ public class BookmarkCardsAdapter extends RecyclerView.Adapter<BookmarkCardsAdap
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             bookmarks.clear();
             bookmarks.addAll((List) filterResults.values);
-
-            Log.i(TAG, "publis: \n" + bookmarks.toString());
-
             notifyDataSetChanged();
         }
     };

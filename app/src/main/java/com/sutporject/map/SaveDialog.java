@@ -14,15 +14,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.sutporject.map.Controller.DataBaseHelper;
 import com.sutporject.map.Model.Bookmark;
+
+import java.util.concurrent.ExecutorService;
 
 public class SaveDialog  extends AppCompatDialogFragment {
     private LatLng latLng;
     private MapFragment fragment;
+    private ExecutorService executorService;
 
-    public SaveDialog(LatLng latLng, MapFragment fragment) {
+    public SaveDialog(LatLng latLng, MapFragment fragment, ExecutorService executorService) {
         this.latLng = latLng;
         this.fragment = fragment;
+        this.executorService = executorService;
     }
 
     @Override
@@ -41,8 +46,15 @@ public class SaveDialog  extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String locationName=((EditText)view.findViewById(R.id.location_name)).getText().toString();
-                Bookmark.addBookmark(new Bookmark(locationName,latLng));
-                Toast.makeText(getContext(),"Location " + locationName + " has been added successfully.",Toast.LENGTH_SHORT).show();
+                Bookmark bookmark = new Bookmark(locationName,latLng.getLongitude(),latLng.getLatitude());
+                Bookmark.addBookmark(bookmark);
+
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(),executorService);
+
+                boolean success = dataBaseHelper.addBookmark(bookmark);
+
+                Toast.makeText(getContext(),success?"Location " + locationName + " has been added successfully.":"Error adding location!"
+                        ,Toast.LENGTH_SHORT).show();
             }
         });
         return builder.create();

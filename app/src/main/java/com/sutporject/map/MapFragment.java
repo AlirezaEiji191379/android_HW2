@@ -275,7 +275,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     IconFactory iconFactory = IconFactory.getInstance(getActivity());
                                     Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
                                     mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
-                                    SaveDialog saveDialog=new SaveDialog(point,getMapFragment());
+                                    SaveDialog saveDialog=new SaveDialog(point,getMapFragment(),executorService);
                                     saveDialog.show(getActivity().getSupportFragmentManager(),"save dialog");
                                     return false;
                                 }

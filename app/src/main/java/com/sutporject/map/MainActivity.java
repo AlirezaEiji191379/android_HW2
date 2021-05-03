@@ -19,8 +19,12 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.sutporject.map.Controller.DataBaseHelper;
+import com.sutporject.map.Model.Bookmark;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermission();
+        loadBookmarksDataBase();
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -94,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -102,6 +109,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    private void loadBookmarksDataBase() {
+        Bookmark.deleteBookmarks();
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(this,executorService);
+        dataBaseHelper.getBookmarks();
     }
 
     public void checkPermission(){

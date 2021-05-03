@@ -60,11 +60,11 @@ public class BookmarkFragment extends Fragment {
 
             bookmarksRecyclerView = view.findViewById(R.id.bookmarks_recyclerview);
             itemTouchHelper.attachToRecyclerView(bookmarksRecyclerView);
-
             bookmarkCardsAdapter = new BookmarkCardsAdapter(Bookmark.getBookmarks());
             bookmarksRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
                     LinearLayoutManager.VERTICAL, false));
             bookmarksRecyclerView.setAdapter(bookmarkCardsAdapter);
+
             if(!firstFlag)
                 Toast.makeText(view.getContext(),"Swipe left to delete",Toast.LENGTH_SHORT).show();
 
