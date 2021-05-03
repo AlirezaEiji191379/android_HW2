@@ -274,7 +274,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
                             mapboxMap.addOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                                 @Override
                                 public boolean onMapLongClick(@NonNull LatLng point) {
-                                    Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(getContext(), String.format("User clicked at: %s", point.toString()), Toast.LENGTH_LONG).show();
                                     mapboxMap.clear();
                                     IconFactory iconFactory = IconFactory.getInstance(getActivity());
                                     Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);

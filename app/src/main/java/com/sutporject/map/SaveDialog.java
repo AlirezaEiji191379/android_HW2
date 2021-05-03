@@ -47,14 +47,18 @@ public class SaveDialog  extends AppCompatDialogFragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String locationName=((EditText)view.findViewById(R.id.location_name)).getText().toString();
                 Bookmark bookmark = new Bookmark(locationName,latLng.getLongitude(),latLng.getLatitude());
-                Bookmark.addBookmark(bookmark);
+                try {
+                    Bookmark.addBookmark(bookmark);
+                    DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(),executorService);
 
-//                DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(),executorService);
-//
-//                boolean success = dataBaseHelper.addBookmark(bookmark);
+                    boolean success = dataBaseHelper.addBookmark(bookmark);
 
-                Toast.makeText(getContext(),"Location " + locationName + " has been added successfully."
-                        ,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Location " + locationName + " has been added successfully."
+                            ,Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(getContext(),e.getMessage()
+                            ,Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return builder.create();

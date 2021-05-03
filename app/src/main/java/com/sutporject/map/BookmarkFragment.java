@@ -15,11 +15,13 @@ import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.sutporject.map.Controller.DataBaseHelper;
 import com.sutporject.map.Controller.SwipeController;
 import com.sutporject.map.Controller.SwipeControllerActions;
 import com.sutporject.map.Model.Bookmark;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 public class BookmarkFragment extends Fragment {
     private boolean firstFlag = true;
@@ -42,6 +44,8 @@ public class BookmarkFragment extends Fragment {
                 Bookmark bookmark = Bookmark.getBookmarks().get(position);
                 try {
                     Bookmark.deleteBookmark(bookmark);
+                    DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(), Executors.newCachedThreadPool());
+                    dataBaseHelper.deleteBookmark(bookmark);
                     Toast.makeText(getContext(),bookmark.getName() +" Deleted!",Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();

@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "onPause: ");
-        clearDatabase();
-        rewriteDatabase();
+//        Log.i(TAG, "onPause: ");
+//        clearDatabase();
+//        rewriteDatabase();
     }
 
     @Override
@@ -146,6 +146,11 @@ public class MainActivity extends AppCompatActivity {
         ExecutorService executorService = Executors.newCachedThreadPool();
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this,executorService);
         dataBaseHelper.getBookmarks();
+        String log = "";
+        for (Bookmark bookmark : Bookmark.getBookmarks()) {
+            log += bookmark.getName() +"  " + bookmark.getID() + "\n";
+        }
+        Log.i(TAG, log);
     }
 
     public void checkPermission(){

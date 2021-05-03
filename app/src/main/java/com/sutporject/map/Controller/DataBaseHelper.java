@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -18,9 +19,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String BOOKMARK_TABLE = "BOOKMARK_TABLE";
     public static final String COLUMN_ID = "ID";
-    public static final String COLUMN_BOOKMARK_NAME = "BOOKMARK_NAME";
-    public static final String COLUMN_BOOKMARK_LONG = "BOOKMARK_LONG";
-    public static final String COLUMN_BOOKMARK_LAT = "BOOKMARK_LAT";
+    public static final String COLUMN_BOOKMARK_NAME = "NAME";
+    public static final String COLUMN_BOOKMARK_LONG = "LONG";
+    public static final String COLUMN_BOOKMARK_LAT = "LAT";
+    private static final String TAG = "IN HELPER DB";
     private ExecutorService executorService;
 
     public DataBaseHelper(@Nullable Context context, ExecutorService executorService) {
@@ -30,8 +32,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTableStatement = "CREATE TABLE " + BOOKMARK_TABLE + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COLUMN_BOOKMARK_NAME + " TEXT, " + COLUMN_BOOKMARK_LONG + " REAL, " + COLUMN_BOOKMARK_LAT + " REAL)";
+//        String createTableStatement = "CREATE TABLE " + BOOKMARK_TABLE + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+//                + COLUMN_BOOKMARK_NAME + " TEXT, " + COLUMN_BOOKMARK_LONG + " REAL, " + COLUMN_BOOKMARK_LAT + " REAL)";
+
+        String createTableStatement = "CREATE TABLE " + BOOKMARK_TABLE + " ("+ COLUMN_BOOKMARK_NAME + " TEXT, "
+                + COLUMN_BOOKMARK_LONG + " REAL, " + COLUMN_BOOKMARK_LAT + " REAL)";
 
         executorService.execute(new Runnable() {
             @Override
@@ -67,6 +72,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public void deleteBookmark(Bookmark bookmark){
+        SQLiteDatabase db = this.getWritableDatabase();
+        CharSequence name = bookmark.getName();
+        String query = "DELETE FROM " + BOOKMARK_TABLE + " WHERE " + COLUMN_BOOKMARK_NAME + " = '" + String.valueOf(name) + "'";
+        Log.i(TAG, query);
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.delete(BOOKMARK_TABLE,COLUMN_BOOKMARK_NAME + " = '" + String.valueOf(name) + "'",null);
+                db.close();
+            }
+        });
+    }
+
     public void getBookmarks(){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + BOOKMARK_TABLE;
@@ -99,12 +118,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(query,null);
             if(cursor.moveToFirst()){
                 do{
-                    int id = cursor.getInt(0);
-                    String name = cursor.getString(1);
-                    double latLong = cursor.getDouble(2);
-                    double latLat = cursor.getDouble(3);
+//                    int id = cursor.getInt(0);
+//                    String name = cursor.getString(1);
+//                    double latLong = cursor.getDouble(2);
+//                    double latLat = cursor.getDouble(3);
+                    String name = cursor.getString(0);
+                    double latLong = cursor.getDouble(1);
+                    double latLat = cursor.getDouble(2);
                     Bookmark bookmark = new Bookmark(name,latLong,latLat);
-                    bookmark.setID(id);
+//                    bookmark.setID(id);
                     returnedList.add(bookmark);
                 }while (cursor.moveToNext());
                 Bookmark.addAllBookmarks(returnedList);

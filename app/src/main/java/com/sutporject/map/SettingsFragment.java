@@ -19,7 +19,11 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.sutporject.map.Controller.DataBaseHelper;
 import com.sutporject.map.Model.Bookmark;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SettingsFragment extends Fragment {
 
@@ -58,6 +62,10 @@ public class SettingsFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Bookmark.deleteBookmarks();
+                                ExecutorService executorService = Executors.newCachedThreadPool();
+                                DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(),executorService);
+                                dataBaseHelper.deleteAllBookmarks();
+                                Toast.makeText(getContext(),"All your bookmarks have been deleted.",Toast.LENGTH_SHORT).show();
                             }
                         })
                 .show();

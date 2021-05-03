@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Locations To Go</string>
+    <string name="app_name">LocationsToGo</string>
     <string name="mapbox_access_token">pk.eyJ1IjoiYWxpcmV6YWVpamkxNTEzNzkiLCJhIjoiY2tuc3hxMzdvMDh1dzJ3cGR4bGVyZDdybSJ9.G5GDrZCnKIWMxXiJXe5mtw</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
