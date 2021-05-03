@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.fragment:fragment:1.3.3"
+    implementation 'com.github.arimorty:floatingsearchview:2.1.1'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.github.arimorty:floatingsearchview:2.1.1'
     testImplementation 'junit:junit:4.+'
