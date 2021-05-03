@@ -76,6 +76,13 @@ public class BookmarkFragment extends Fragment {
                     LinearLayoutManager.VERTICAL, false));
             bookmarksRecyclerView.setAdapter(bookmarkCardsAdapter);
 
+            ItemClickSupport.addTo(bookmarksRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                @Override
+                public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+
+                }
+            });
+
             if(!firstFlag)
                 Toast.makeText(view.getContext(),"Swipe left to delete",Toast.LENGTH_SHORT).show();
 
