@@ -14,47 +14,57 @@
         android:background="@android:color/transparent"
         mapbox:mapbox_cameraTargetLat="40.73581"
         mapbox:mapbox_cameraTargetLng="-73.99155"
-        mapbox:mapbox_cameraZoom="15" />
+        mapbox:mapbox_cameraZoom="15" >
 
-    <AutoCompleteTextView
-        android:id="@+id/search_location"
-        android:layout_width="358dp"
-        android:layout_height="46dp"
-        android:layout_gravity="top|center"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/searchbox_style"
-        android:hint="@string/search_hint"
-        android:textColorHint="@color/primaryTextColor"
-        android:textColor="@color/primaryTextColor"
-        android:padding="5dp"
-        android:inputType="text"
-        android:imeOptions="actionSearch"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/get_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/primaryColor"
-        app:srcCompat="@android:drawable/ic_menu_mylocation"
-        />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/get_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/primaryColor"
+            app:srcCompat="@android:drawable/ic_btn_speak_now" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/get_voice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/primaryColor"
-        app:srcCompat="@android:drawable/ic_btn_speak_now"
-        />
+        <AutoCompleteTextView
+            android:id="@+id/search_location"
+            android:layout_width="358dp"
+            android:layout_height="46dp"
+            android:layout_gravity="top|center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/searchbox_style"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:padding="5dp"
+            android:textColor="@color/primaryTextColor"
+            android:textColorHint="@color/primaryTextColor" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/get_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/primaryColor"
+            app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
+        <TextView
+            android:id="@+id/speed"
+            android:layout_width="241dp"
+            android:layout_height="68dp"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="16dp"
+            android:background="@color/primaryColor"
+            android:gravity="center"
+            android:textSize="40dp"/>
+
+    </com.mapbox.mapboxsdk.maps.MapView>
 
 </FrameLayout>

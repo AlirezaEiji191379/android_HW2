@@ -1,15 +1,14 @@
 package com.sutporject.map;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -28,9 +27,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -57,12 +59,9 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+public class MapFragment extends Fragment implements OnMapReadyCallback,LocationListener {
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
-
+    private TextView speed;
     private MapView mapView;
     private SpeechRecognizer speechRecognizer;
     private MapboxMap mapboxMap;
@@ -86,9 +85,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     return;
                 }
                 else{
-                    for(SearchedPoint searchedPoint:allApiReturned){
-                        Log.i("rests",searchedPoint.toString());
-                    }
                     adapter=new ArrayAdapter<SearchedPoint>(getActivity(), android.R.layout.simple_list_item_1,allApiReturned);
                     search_location.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -97,7 +93,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         }
     };
-
+    private LocationManager locationManager;
     public MapboxMap getMapboxMap() {
         return mapboxMap;
     }
@@ -110,20 +106,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.executorService= Executors.newCachedThreadPool();
+        this.executorService = Executors.newCachedThreadPool();
         //connectionManager=new ConnectionManager(this);
-        gpsManager=new GpsManager(this);
-        speechRecognizer=SpeechRecognizer.createSpeechRecognizer(getActivity());
-        speechIntent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
+        gpsManager = new GpsManager(this);
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getActivity());
+        speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getActivity(), getString(R.string.mapbox_access_token));
         ViewGroup root=(ViewGroup)inflater.inflate(R.layout.fragment_map, container, false);
-
+        speed=root.findViewById(R.id.speed);
+        speed.setText("0 m/s");
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
@@ -206,7 +206,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
             }
         });
-
 
         search_location.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -310,8 +309,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -397,5 +394,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             ch = str.charAt(i);
         }
         return s.toString().trim();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        //Toast.makeText(getActivity(),String.valueOf(location.getSpeed()),Toast.LENGTH_LONG).show();
+        speed.setText(String.valueOf(Math.round(location.getSpeed()*100)/100)+" m/s");
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+        Toast.makeText(getActivity(),R.string.disabled_location,Toast.LENGTH_LONG).show();
+        speed.setText("0 m/s");
     }
 }

@@ -23,5 +23,6 @@
     <string name="deleting_all_bookmarks_message">Do you want to delete all your bookmarks?</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
+    <string name="disabled_location">لطفا مکان دستگاه خود را روشن بگذارید.</string>
 
 </resources>
