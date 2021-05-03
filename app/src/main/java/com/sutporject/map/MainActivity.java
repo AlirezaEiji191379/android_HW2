@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.sutporject.map.Controller.DataBaseHelper;
 import com.sutporject.map.Model.Bookmark;
 
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "In Main";
     private FragmentManager fragmentManager;
+    MapFragment mapFragment = new MapFragment();
+    BookmarkFragment bookmarkFragment = new BookmarkFragment();
+    SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        MapFragment mapFragment = new MapFragment();
-        BookmarkFragment bookmarkFragment = new BookmarkFragment();
-        SettingsFragment settingsFragment = new SettingsFragment();
+        mapFragment = new MapFragment();
+        bookmarkFragment = new BookmarkFragment();
+        settingsFragment = new SettingsFragment();
         final Fragment[] shownFragment = {mapFragment};
 
         fragmentTransaction.add(R.id.mapContainer, mapFragment);
@@ -98,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
 //                bottomNavigation.getMenu().getItem(1).setChecked(true);
 //            }
 //        });
+    }
+
+    public void showMap(LatLng latLng){
+        FragmentManager fmRemove = getSupportFragmentManager();
+        FragmentTransaction ftRemove = fmRemove.beginTransaction();
+        ftRemove.remove(bookmarkFragment);
+        ftRemove.commit();
+        mapFragment.zoomOnLocation(latLng);
     }
 
 

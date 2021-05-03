@@ -198,12 +198,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 LatLng point=((SearchedPoint)adapterView.getItemAtPosition(position)).getCoordinates();
-                mapboxMap.clear();
-                IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
-                mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
-                CameraPosition cameraPosition=new CameraPosition.Builder().target(point).zoom(10).build();
-                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
+//                mapboxMap.clear();
+//                IconFactory iconFactory = IconFactory.getInstance(getActivity());
+//                Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
+//                mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
+//                CameraPosition cameraPosition=new CameraPosition.Builder().target(point).zoom(10).build();
+//                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
+                zoomOnLocation(point);
             }
         });
 
@@ -222,12 +223,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
                         for(SearchedPoint searchedPoint:allApiReturned){
                             for(String string:tokens){
                                 if(searchedPoint.getPlace_name().contains(string)){
-                                    mapboxMap.clear();
-                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                    Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
-                                    mapboxMap.addMarker(new MarkerOptions().position(searchedPoint.getCoordinates()).icon(icon));
-                                    CameraPosition cameraPosition=new CameraPosition.Builder().target(searchedPoint.getCoordinates()).zoom(10).build();
-                                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
+//                                    mapboxMap.clear();
+//                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
+//                                    Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
+//                                    mapboxMap.addMarker(new MarkerOptions().position(searchedPoint.getCoordinates()).icon(icon));
+//                                    CameraPosition cameraPosition=new CameraPosition.Builder().target(searchedPoint.getCoordinates()).zoom(10).build();
+//                                    mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
+                                    zoomOnLocation(searchedPoint.getCoordinates());
                                     return true;
                                 }
                             }
@@ -260,6 +262,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return root;
+    }
+
+
+    public void zoomOnLocation(LatLng point){
+        mapboxMap.clear();
+        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+        Icon icon = iconFactory.fromResource(R.drawable.user_location_icon);
+        mapboxMap.addMarker(new MarkerOptions().position(point).icon(icon));
+        CameraPosition cameraPosition=new CameraPosition.Builder().target(point).zoom(14).build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000);
     }
 
     @Override

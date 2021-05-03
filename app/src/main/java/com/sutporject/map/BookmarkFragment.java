@@ -79,7 +79,8 @@ public class BookmarkFragment extends Fragment {
             ItemClickSupport.addTo(bookmarksRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                 @Override
                 public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-
+                    Bookmark bookmark = Bookmark.getBookmarks().get(position);
+                    ((MainActivity) getActivity()).showMap(new LatLng(bookmark.getLatLat(),bookmark.getLatLong()));
                 }
             });
 
