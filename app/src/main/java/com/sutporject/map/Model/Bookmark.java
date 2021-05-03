@@ -10,7 +10,7 @@ public class Bookmark {
     private String name;
     private double latLong;
     private double latLat;
-    private int ID;
+    private int ID = -1;
 
     public Bookmark(String name, double latLong, double latLat) {
         this.name = name;
@@ -50,6 +50,13 @@ public class Bookmark {
         return bookmarks;
     }
 
+    public static void deleteBookmark(Bookmark bookmark) throws Exception{
+        if(bookmarks.contains(bookmark)){
+            bookmarks.remove(bookmark);
+        }else{
+            throw new Exception("No bookmarks were found");
+        }
+    }
 
     public static void setBookmarks(ArrayList<Bookmark> bookmarks) {
         Bookmark.bookmarks = bookmarks;

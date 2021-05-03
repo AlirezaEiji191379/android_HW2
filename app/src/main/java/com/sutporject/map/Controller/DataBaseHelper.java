@@ -50,8 +50,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_BOOKMARK_NAME, bookmark.getName());
-        cv.put(COLUMN_BOOKMARK_LAT, bookmark.getLatLat());
         cv.put(COLUMN_BOOKMARK_LONG, bookmark.getLatLong());
+        cv.put(COLUMN_BOOKMARK_LAT, bookmark.getLatLat());
         final long[] insert = new long[1];
 
         executorService.execute(new Runnable() {
@@ -70,14 +70,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void getBookmarks(){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + BOOKMARK_TABLE;
-        executorService.execute(new gettingBookmarksRunnable(db,query));
+        executorService.execute(new GettingBookmarksRunnable(db,query));
     }
 
-    static private class gettingBookmarksRunnable implements Runnable{
+    public void deleteAllBookmarks(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                db.delete(BOOKMARK_TABLE,null,null);
+                db.close();
+            }
+        });
+    }
+
+    static private class GettingBookmarksRunnable implements Runnable{
         SQLiteDatabase db;
         String query;
 
-        private gettingBookmarksRunnable(SQLiteDatabase db, String query){
+        private GettingBookmarksRunnable(SQLiteDatabase db, String query){
             this.db = db;
             this.query = query;
         }
@@ -88,10 +99,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(query,null);
             if(cursor.moveToFirst()){
                 do{
+                    int id = cursor.getInt(0);
                     String name = cursor.getString(1);
                     double latLong = cursor.getDouble(2);
                     double latLat = cursor.getDouble(3);
-                    returnedList.add(new Bookmark(name,latLong,latLat));
+                    Bookmark bookmark = new Bookmark(name,latLong,latLat);
+                    bookmark.setID(id);
+                    returnedList.add(bookmark);
                 }while (cursor.moveToNext());
                 Bookmark.addAllBookmarks(returnedList);
             }

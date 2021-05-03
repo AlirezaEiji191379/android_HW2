@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "In Main";
     private FragmentManager fragmentManager;
 
     @Override
@@ -110,6 +111,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: ");
+        clearDatabase();
+        rewriteDatabase();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    //
+    private void rewriteDatabase() {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(this,executorService);
+        for (Bookmark bookmark : Bookmark.getBookmarks()) {
+            dataBaseHelper.addBookmark(bookmark);
+        }
+    }
+
+    private void clearDatabase() {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(this,executorService);
+        dataBaseHelper.deleteAllBookmarks();
+    }
+    //
 
     private void loadBookmarksDataBase() {
         Bookmark.deleteBookmarks();

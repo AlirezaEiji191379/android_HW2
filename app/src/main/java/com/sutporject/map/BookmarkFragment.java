@@ -39,7 +39,14 @@ public class BookmarkFragment extends Fragment {
         SwipeController swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                Toast.makeText(getContext(),"clicked",Toast.LENGTH_SHORT).show();
+                Bookmark bookmark = Bookmark.getBookmarks().get(position);
+                try {
+                    Bookmark.deleteBookmark(bookmark);
+                    Toast.makeText(getContext(),bookmark.getName() +" Deleted!",Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+                bookmarkCardsAdapter.notifyDataSetChanged();
                 super.onRightClicked(position);
             }
         },getContext());

@@ -18,5 +18,10 @@
     <string name="delete_all_bookmarks_label">Delete All Bookmarks</string>
     <string name="failed_location_permission">برای گرفتن مکان دستگاه نیاز به دسترسی به Location دارد.</string>
     <string name="failed_audio_permission">دستگاه برای دریافت صدای شما نیاز به دسترسی به audio recognition دارد.</string>
+    <string name="no_bookmarks">No Bookmarks Here :(</string>
+    <string name="deleting_all_bookmarks">Delete all bookmarks</string>
+    <string name="deleting_all_bookmarks_message">Do you want to delete all your bookmarks?</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
 
 </resources>

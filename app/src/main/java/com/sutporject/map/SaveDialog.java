@@ -49,11 +49,11 @@ public class SaveDialog  extends AppCompatDialogFragment {
                 Bookmark bookmark = new Bookmark(locationName,latLng.getLongitude(),latLng.getLatitude());
                 Bookmark.addBookmark(bookmark);
 
-                DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(),executorService);
+//                DataBaseHelper dataBaseHelper = new DataBaseHelper(getContext(),executorService);
+//
+//                boolean success = dataBaseHelper.addBookmark(bookmark);
 
-                boolean success = dataBaseHelper.addBookmark(bookmark);
-
-                Toast.makeText(getContext(),success?"Location " + locationName + " has been added successfully.":"Error adding location!"
+                Toast.makeText(getContext(),"Location " + locationName + " has been added successfully."
                         ,Toast.LENGTH_SHORT).show();
             }
         });
