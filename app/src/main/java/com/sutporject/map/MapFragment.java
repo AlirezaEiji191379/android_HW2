@@ -242,13 +242,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ((FloatingActionButton)root.findViewById(R.id.get_voice)).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    speechRecognizer.stopListening();
+                if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                        speechRecognizer.stopListening();
+                    }
+
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                        speechRecognizer.startListening(speechIntent);
+                    }
+                }else{
+                    requestPermissions(new String []{Manifest.permission.RECORD_AUDIO},101);
                 }
 
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                    speechRecognizer.startListening(speechIntent);
-                }
                 return false;
             }
         });
@@ -319,7 +324,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                 });
             }else{
-                Toast.makeText(getActivity(),"برای گرفتن مکان دستگاه نیاز به دسترسی به Location دارد.",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),R.string.failed_location_permission,Toast.LENGTH_LONG).show();
+            }
+        }
+        else if(requestCode==101 && grantResults.length>0){
+            if(grantResults[0]==0){
+                speechRecognizer.startListening(speechIntent);
+            }else{
+                Toast.makeText(getActivity(),R.string.failed_audio_permission,Toast.LENGTH_LONG).show();
             }
         }
     }

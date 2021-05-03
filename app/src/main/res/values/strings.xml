@@ -16,6 +16,7 @@
     <string name="save_hint">Location name</string>
     <string name="dark_mode_label">Dark Mode</string>
     <string name="delete_all_bookmarks_label">Delete All Bookmarks</string>
-    <string name="no_bookmarks">No bookmarks here :(</string>
+    <string name="failed_location_permission">برای گرفتن مکان دستگاه نیاز به دسترسی به Location دارد.</string>
+    <string name="failed_audio_permission">دستگاه برای دریافت صدای شما نیاز به دسترسی به audio recognition دارد.</string>
 
 </resources>
