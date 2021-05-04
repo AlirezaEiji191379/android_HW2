@@ -152,7 +152,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
 
             @Override
             public void onError(int i) {
-
+                Toast.makeText(getActivity(),R.string.internet_connection,Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -312,7 +312,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
                 @Override
                 public void onClick(View view) {
                     locationComponent.setCameraMode(CameraMode.TRACKING);
-                    //locationComponent.zoomWhileTracking(40f);
+                    //locationComponent.zoomWhileTracking(10f);
                 }
             });
 
